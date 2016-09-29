@@ -15,15 +15,24 @@ try
     $path = Join-Path $installDirectory $nugetFile
 
     $newfileItem = Get-Item $tempFile
-    $oldfileItem = Get-Item $path
 
-    if($newFileItem.Length -ne $oldfileItem)
+    if(!Test-Path $oldfileItem)
     {
-        Write-Host "Updating Nuget.exe to the latest version"
+        $oldfileItem = Get-Item $path
+    
+        if($newFileItem.Length -ne $oldfileItem)
+        {
+            Write-Host "Updating Nuget.exe to the latest version"
 
+            Move-Item $tempFile $path
+
+            Write-Host "New version of nuget installed"
+        }
+    }
+    else 
+    {
+        Write-Host "Nuget not install so installing latest"
         Move-Item $tempFile $path
-
-        Write-Host "New version of nuget installed"
     }
 }
 catch
@@ -34,4 +43,4 @@ catch
 Write-Host "Using locally installed Nuget.exe"
 
 $endTime = Get-Date
-Write-Host "Update completed " + @endTime
+Write-Host "Update completed " + $endTime
